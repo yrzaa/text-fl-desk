@@ -10,6 +10,10 @@ from gevent.pywsgi import WSGIServer
 import tensorflow as tf
 from tensorflow import keras
 
+#debug
+#import keras.backend.tensorflow_backend as tb
+#keras.backend.tensorflow_backend._SYMBOLIC_SCOPE.value = True
+
 from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
@@ -29,19 +33,20 @@ app = Flask(__name__)
 
 # You can use pretrained model from Keras
 # Check https://keras.io/applications/
+'''
 from keras.applications.mobilenet_v2 import MobileNetV2
 model = MobileNetV2(weights='imagenet')
-
-print('Model loaded. Check http://127.0.0.1:5000/')
+'''
+#print('Model loaded. Check http://127.0.0.1:5000/')
 
 
 # Model saved with Keras model.save()
-MODEL_PATH = 'models/your_model.h5'
+MODEL_PATH = 'models/imagenetModel.h5'
 
 # Load your own trained model
-# model = load_model(MODEL_PATH)
-# model._make_predict_function()          # Necessary
-# print('Model loaded. Start serving...')
+model = load_model(MODEL_PATH)
+model._make_predict_function()          # Necessary
+print('Model loaded. Start serving...')
 
 
 def model_predict(img, model):
@@ -115,7 +120,7 @@ if __name__ == '__main__':
                       background_color='#1cfff0', text_select=False)
     window.closed+=onClosed
     webview.start()
-    
+   
     #window
     
     

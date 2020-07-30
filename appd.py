@@ -107,7 +107,7 @@ if __name__ == '__main__':
     t = threading.Thread(target=serverth)
     t.daemon = True
     t.start()
-"""
+
     window=webview.create_window("Image Classifier Example","http://127.0.0.1:5000/",width=1600, height=900, \
                       x=None, y=None, resizable=True, fullscreen=False, \
                       min_size=(200, 100), hidden=False, frameless=False, \
@@ -115,7 +115,7 @@ if __name__ == '__main__':
                       background_color='#1cfff0', text_select=False)
     window.closed+=onClosed
     webview.start()
-    """
+    
     #window
     
     

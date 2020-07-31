@@ -17,10 +17,12 @@ from tensorflow import keras
 from tensorflow.keras.applications.imagenet_utils import preprocess_input, decode_predictions
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
+import tensorflow_hub as hub
 
 # Some utilites
 import numpy as np
 from util import base64_to_pil
+import requests
 
 #Desktop implementation
 import webview
@@ -41,27 +43,21 @@ model = MobileNetV2(weights='imagenet')
 
 
 # Model saved with Keras model.save()
-MODEL_PATH = 'models/imagenetModel.h5'
+MODEL_PATH = 'models/imdb.h5'
 
 # Load your own trained model
-model = load_model(MODEL_PATH)
-model._make_predict_function()          # Necessary
+model = load_model(MODEL_PATH,custom_objects={'KerasLayer':hub.KerasLayer})
+#model._make_predict_function()          # Necessary
 print('Model loaded. Start serving...')
 
 
-def model_predict(img, model):
-    img = img.resize((224, 224))
-
-    # Preprocessing the image
-    x = image.img_to_array(img)
-    # x = np.true_divide(x, 255)
-    x = np.expand_dims(x, axis=0)
-
-    # Be careful how your trained model deals with the input
-    # otherwise, it won't make correct prediction!
-    x = preprocess_input(x, mode='tf')
-
+def model_predict(review, model):
+    x=[review]
     preds = model.predict(x)
+    if preds>=0:
+        preds=1
+    else:
+        preds=0
     return preds
 
 
@@ -74,24 +70,19 @@ def index():
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if request.method == 'POST':
-        # Get the image from post request
-        img = base64_to_pil(request.json)
-
-        # Save the image to ./uploads
-        # img.save("./uploads/image.png")
-
-        # Make prediction
-        preds = model_predict(img, model)
-
-        # Process your result for human
-        pred_proba = "{:.3f}".format(np.amax(preds))    # Max probability
-        pred_class = decode_predictions(preds, top=1)   # ImageNet Decode
-
-        result = str(pred_class[0][0][1])               # Convert to string
-        result = result.replace('_', ' ').capitalize()
         
+
+        #process input
+        
+        # Make prediction
+        
+        img=request.json['input']
+        preds = model_predict(img, model)
+        data={"success":True}
+        data["result"]=preds
+        print("procesed")
         # Serialize the result, you can add additional fields
-        return jsonify(result=result, probability=pred_proba)
+        return jsonify(result=preds)
 
     return None
 
@@ -108,6 +99,11 @@ def onClosed():
 
 
 if __name__ == '__main__':
+
+    
+
+
+
     
     t = threading.Thread(target=serverth)
     t.daemon = True

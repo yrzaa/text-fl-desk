@@ -115,7 +115,7 @@ if __name__ == '__main__':
                       minimized=False, on_top=False, confirm_close=False, \
                       background_color='#1cfff0', text_select=False)
     window.closed+=onClosed
-    webview.start()
+    webview.start(debug=True,gui='cef')
    
     #window
     

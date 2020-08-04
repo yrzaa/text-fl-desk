@@ -14,4 +14,7 @@ Uses a tf2 model with tf hub, trained on imdb database to classify reviews as po
 
 # Screenshots
 ![Screenshot 1](screen1.png)
+
+
+
 ![Screenshot 2](screen2.png)

@@ -12,7 +12,7 @@ OR Use run.bat if you use conda
 Runs a desktop application for text classification with flask backend.
 Uses a tf2 model with tf hub, with pretrained text embedding, trained on imdb database to classify reviews as positive or negative.
 
-# Screenshots
+# Demo:
 ![Screenshot 1](screen1.png)
 
 

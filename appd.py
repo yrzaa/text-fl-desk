@@ -10,7 +10,7 @@ from gevent.pywsgi import WSGIServer
 import tensorflow as tf
 from tensorflow import keras
 
-#debug
+
 #import keras.backend.tensorflow_backend as tb
 #keras.backend.tensorflow_backend._SYMBOLIC_SCOPE.value = True
 
@@ -54,7 +54,7 @@ print('Model loaded. Start serving...')
 def model_predict(review, model):
     x=[review]
     preds = model.predict(x)
-    if preds>=0:
+    if preds>=0:            #encode prediction to binary
         preds=1
     else:
         preds=0
@@ -72,21 +72,20 @@ def predict():
     if request.method == 'POST':
         
 
-        #process input
         
         # Make prediction
         
-        img=request.json['input']
+        img=request.json['input']                           #input
         preds = model_predict(img, model)
         data={"success":True}
         data["result"]=preds
         print("procesed")
-        # Serialize the result, you can add additional fields
+        # Serialize the result
         return jsonify(result=preds)
 
     return None
 
-#server
+#run server
 def serverth():
     # app.run(port=5002, threaded=False)
 
@@ -100,21 +99,19 @@ def onClosed():
 
 if __name__ == '__main__':
 
-    
-
-
-
-    
+    #start server
     t = threading.Thread(target=serverth)
     t.daemon = True
     t.start()
 
+    #define window
     window=webview.create_window("ImDB review classifier","http://127.0.0.1:5000/",width=1600, height=900, \
                       x=None, y=None, resizable=True, fullscreen=False, \
                       min_size=(200, 100), hidden=False, frameless=False, \
                       minimized=False, on_top=False, confirm_close=False, \
                       background_color='#1cfff0', text_select=False)
     window.closed+=onClosed
+    #start window
     webview.start(debug=True,gui='cef')
    
     #window
